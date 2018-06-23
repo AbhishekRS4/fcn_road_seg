@@ -178,7 +178,7 @@ def batch_train():
         print("")
 
         if (epoch + 1) % 25 == 0:
-            save_model(ss, model_directory, config['model_file'][model_to_use], epoch)
+            save_model(ss, model_directory, config['model_file'][model_to_use % 3], epoch)
         
 
     print("Training the Network Completed...........")
