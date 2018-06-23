@@ -124,10 +124,10 @@ def batch_train():
     if model_to_use == 0 or model_to_use == 1 or model_to_use == 2:
         loss = cross_entropy_loss(mask_pl, logits, axis = axis)
     elif model_to_use == 3 or model_to_use == 4 or model_to_use == 5:
-        loss = dice_loss(mask_pl, logits, axis = axis)
+        loss = dice_loss(mask_pl, logits, dim = axis)
     else:
         loss_1 = dice_loss(mask_pl, logits, axis = axis)
-        loss_2 = cross_entropy_loss(mask_pl, logits, axis = axis)
+        loss_2 = cross_entropy_loss(mask_pl, logits, dim = axis)
         loss = loss_1 + loss_2
  
     optimizer = get_optimizer(config['learning_rate'], loss)
