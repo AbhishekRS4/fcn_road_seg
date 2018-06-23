@@ -59,7 +59,7 @@ def infer():
     ss.run(tf.global_variables_initializer())
 
     # load the model parameters
-    tf.train.Saver().restore(ss, os.path.join(os.getcwd(), os.path.join(model_directory, config['model_file'][model_to_use])) + '-' + str(config['num_epochs']))
+    tf.train.Saver().restore(ss, os.path.join(os.getcwd(), os.path.join(model_directory, config['model_file'][model_to_use % 3])) + '-' + str(config['num_epochs']))
 
     print("Inference Started.......................")
     for img_file in os.listdir(config['INPUTS_PATH']):
