@@ -7,8 +7,8 @@ import cv2
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
+# the order of channels should be BGR for subtracting mean
 VGG_MEAN = np.array([103.939, 116.779, 123.68]).reshape(3, 1).T
-
 
 # read the json file and return the content
 def read_config_file(json_file_name):
