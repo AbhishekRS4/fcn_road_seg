@@ -9,7 +9,7 @@ from sklearn.utils import shuffle
 from fcn_utils import init, read_config_file, get_data, preprocess_images, get_train_test_set
 import network_architecture as na
 
-param_config_file_name = os.path.join(os.getcwd(), "fcn_config.json")
+param_config_file_name = os.path.join(os.getcwd(), 'fcn_config.json')
 
 
 # return the softmax layer
@@ -30,7 +30,7 @@ def dice_loss(ground_truth, predicted_logits, dim = -1, smooth = 1e-5, name = 'm
 
 
 # return cross entropy loss
-def cross_entropy_loss(ground_truth, prediction, axis, name = "mean_cross_entropy"):
+def cross_entropy_loss(ground_truth, prediction, axis, name = 'mean_cross_entropy'):
     mean_ce = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels = ground_truth, logits = prediction, dim = axis), name = name)
     return mean_ce
 
@@ -42,16 +42,13 @@ def get_optimizer(learning_rate, loss_function):
 
 
 # return the placeholder
-def get_placeholders(img_placeholder_shape, training = False, mask_placeholder_shape = None):
-    img_pl = tf.placeholder(tf.float32, shape = img_placeholder_shape)
+def get_placeholders(img_placeholder_shape, mask_placeholder_shape):
     # set the image placeholder
+    img_pl = tf.placeholder(tf.float32, shape = img_placeholder_shape)
 
-    if training:
-        # set the label placeholder in the training phase
-        mask_pl = tf.placeholder(tf.float32, shape = mask_placeholder_shape)
-        return (img_pl, mask_pl)
-
-    return img_pl
+    # set the mask placeholder
+    mask_pl = tf.placeholder(tf.float32, shape = mask_placeholder_shape)
+    return (img_pl, mask_pl)
 
 
 # save the trained model
@@ -126,8 +123,8 @@ def batch_train():
     elif model_to_use == 3 or model_to_use == 4 or model_to_use == 5:
         loss = dice_loss(mask_pl, logits, dim = axis)
     else:
-        loss_1 = dice_loss(mask_pl, logits, axis = axis)
-        loss_2 = cross_entropy_loss(mask_pl, logits, dim = axis)
+        loss_1 = dice_loss(mask_pl, logits, dim = axis)
+        loss_2 = cross_entropy_loss(mask_pl, logits, axis = axis)
         loss = loss_1 + loss_2
  
     optimizer = get_optimizer(config['learning_rate'], loss)
