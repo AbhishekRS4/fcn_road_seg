@@ -8,7 +8,6 @@ import tensorflow as tf
 
 import network_architecture as na
 from fcn_utils import read_config_file, get_data, preprocess_images, get_accuracy_score
-from fcn_train import get_placeholders
 import network_architecture as na
 
 param_config_file_name = os.path.join(os.getcwd(), "fcn_config.json")
@@ -17,6 +16,13 @@ alpha = 0.2
 def get_softmax_layer(logits, axis, name = "softmax"):
     probs = tf.nn.softmax(logits, dim = axis, name = name)     
     return probs
+
+# return the placeholder
+def get_placeholder(img_placeholder_shape):
+    # set the image placeholder
+    img_pl = tf.placeholder(tf.float32, shape = img_placeholder_shape)
+
+    return img_pl
 
 
 # run inference on test set
@@ -38,7 +44,7 @@ def infer():
         IMAGE_PLACEHOLDER_SHAPE = [None] + [config['NUM_CHANNELS']] + config['TARGET_IMAGE_SIZE']
         axis = 1
  
-    img_pl = get_placeholders(img_placeholder_shape = IMAGE_PLACEHOLDER_SHAPE, training = not(config['TRAINING']))
+    img_pl = get_placeholder(img_placeholder_shape = IMAGE_PLACEHOLDER_SHAPE)
 
     net_arch = na.FCN(config['VGG_PATH'], config['data_format'], config['num_classes'])
     net_arch.vgg_encoder(img_pl)
