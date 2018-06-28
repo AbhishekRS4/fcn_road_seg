@@ -104,7 +104,7 @@ def batch_train():
         valid_masks = np.transpose(valid_masks, [0, 3, 1, 2])
         axis = 1 
     
-    img_pl, mask_pl = get_placeholders(img_placeholder_shape = IMAGE_PLACEHOLDER_SHAPE, training = bool(config['TRAINING']), mask_placeholder_shape = MASK_PLACEHOLDER_SHAPE)
+    img_pl, mask_pl = get_placeholders(img_placeholder_shape = IMAGE_PLACEHOLDER_SHAPE, mask_placeholder_shape = MASK_PLACEHOLDER_SHAPE)
     net_arch = na.FCN(config['VGG_PATH'], config['data_format'], config['num_classes'])
     net_arch.vgg_encoder(img_pl)
  
