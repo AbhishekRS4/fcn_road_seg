@@ -56,7 +56,7 @@ def get_data(images_list, images_directory, masks_directory, mask_shape):
 
 
 # split into train and test set
-def get_train_test_set(images_list, test_size = 0.5):
+def get_train_test_split(images_list, test_size = 0.5):
     train_images_list, test_images_list = train_test_split(images_list, test_size = test_size, random_state = 4)
     
     return (train_images_list, test_images_list) 
