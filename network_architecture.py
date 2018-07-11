@@ -1,5 +1,5 @@
 # code for transfer learning of vgg-16 encoder and trainable fcn decoder
-# author : Abhishek R S
+# @author : Abhishek R S
 
 import os
 import numpy as np
