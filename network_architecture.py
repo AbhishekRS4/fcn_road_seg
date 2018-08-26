@@ -5,7 +5,6 @@ import os
 import numpy as np
 import tensorflow as tf
 
-
 class FCN:
     def __init__(self, vgg16_npy_path = None, data_format = 'channels_last', num_classes = 2):
         self.data_dict = np.load(vgg16_npy_path, encoding = 'latin1').item()
@@ -29,16 +28,16 @@ class FCN:
             self.vgg_data_format = 'NCHW'
             self.pool_kernel = [1, 1, 2, 2]
             self.pool_strides = [1, 1, 2, 2] 
-            
-        print('VGG-16 weights loaded')
 
+    #--------------------------------------------------#
+    # Function defining VGG-16 encoder                 #
+    #--------------------------------------------------#
 
     def vgg_encoder(self, img_pl):
         '''
-        load variable from npy to build the VGG
+        load pre-trained weights to build the VGG-16 encoder
         input image - bgr image [batch, height, width, 3] values
         '''
-
         # build the vgg-16 encoder
         self.conv1_1 = self._conv_layer(img_pl, 'conv1_1')
         self.conv1_2 = self._conv_layer(self.conv1_1, 'conv1_2')
@@ -63,6 +62,9 @@ class FCN:
         self.conv5_3 = self._conv_layer(self.conv5_2, 'conv5_3')
         self.pool5 = self._max_pool(self.conv5_3, 'pool5')
 
+    #--------------------------------------------------#
+    # Function defining FCN-8 decoder                  #
+    #--------------------------------------------------#
 
     # define the fcn8 decoder
     def fcn_8(self):
@@ -86,6 +88,9 @@ class FCN:
         self.conv_tr3 = self._get_conv2d_transpose_layer(self.fuse2, self.num_classes, [16, 16], [8, 8], self.padding, self.data_format, name = 'conv_tr3')
         self.logits = self._get_conv2d_layer(self.conv_tr3, self.num_classes, [1, 1], [1, 1], self.padding, self.data_format, name = 'logits')
               
+    #--------------------------------------------------#
+    # Function defining FCN-16 decoder                 #
+    #--------------------------------------------------#
 
     # define the fcn16 decoder
     def fcn_16(self):
@@ -105,6 +110,9 @@ class FCN:
         self.conv_tr2 = self._get_conv2d_transpose_layer(self.fuse1, self.num_classes, [32, 32], [16, 16], self.padding, self.data_format, name = 'conv_tr2')
         self.logits = self._get_conv2d_layer(self.conv_tr2, self.num_classes, [1, 1], [1, 1], self.padding, self.data_format, name = 'logits')
     
+    #--------------------------------------------------#
+    # Function defining FCN-32 decoder                 #
+    #--------------------------------------------------#
 
     # define the fcn32 decoder
     def fcn_32(self):
@@ -119,27 +127,30 @@ class FCN:
 
         self.conv_tr1 = self._get_conv2d_transpose_layer(self.elu8, self.num_classes, [64, 64], [32, 32], self.padding, self.data_format, name = 'conv_tr1')
         self.logits = self._get_conv2d_layer(self.conv_tr1, self.num_classes, [1, 1], [1, 1], self.padding, self.data_format, name = 'logits')
-        
 
+    #--------------------------------------------------#
+    # Functions for defining decoder layers            # 
+    #--------------------------------------------------#
+        
     # return convolution2d layer
     def _get_conv2d_layer(self, input_tensor, num_filters, kernel_size, strides, padding, data_format, name = 'conv'):
         return tf.layers.conv2d(inputs = input_tensor, filters = num_filters, kernel_size = kernel_size, strides = strides, padding = padding, data_format = data_format, name = name)
-
 
     # return convolution2d_transpose layer
     def _get_conv2d_transpose_layer(self, input_tensor, num_filters, kernel_size, strides, padding, data_format, name = 'conv_tr'):
         return tf.layers.conv2d_transpose(inputs = input_tensor, filters = num_filters, kernel_size = kernel_size, strides = strides, padding = padding, data_format = data_format, name = name)
 
-
     # return ELU activation function
     def _get_elu_activation(self, input_tensor, name = 'elu'):
         return tf.nn.elu(input_tensor, name = name)
 
+    #--------------------------------------------------#
+    # Functions for loading VGG-16 pre-trained weights # 
+    #--------------------------------------------------#
 
     # perform maxpool2d in vgg16 encoder
     def _max_pool(self, input_layer, name):
         return tf.nn.max_pool(value = input_layer, ksize = self.pool_kernel, strides = self.pool_strides, padding = self.padding, data_format = self.vgg_data_format, name = name)
-
 
     # perform convolution2d in vgg16 encoder
     def _conv_layer(self, input_layer, name):
@@ -153,14 +164,10 @@ class FCN:
 
             return relu
 
-
     # get pre-trained vgg16 convolution2d filter
     def _get_conv_filter(self, name):
         return tf.constant(self.data_dict[name][0], name = 'kernel')
 
-
     # get pre-trained vgg16 biases
     def _get_bias(self, name):
         return tf.constant(self.data_dict[name][1], name = 'biases')
-
-
