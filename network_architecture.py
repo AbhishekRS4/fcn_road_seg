@@ -16,7 +16,6 @@ class FCN:
         self.padding = 'SAME'
         self.conv_strides = [1, 1, 1, 1]
         self.num_classes = num_classes
-        self.l2_regularizer = tf.contrib.layers.l2_regularizer(scale = 0.1)  
  
         '''
         based on the data format set appropriate pool_kernel and pool_strides
@@ -124,12 +123,12 @@ class FCN:
 
     # return convolution2d layer
     def _get_conv2d_layer(self, input_tensor, num_filters, kernel_size, strides, padding, data_format, name = 'conv'):
-        return tf.layers.conv2d(inputs = input_tensor, filters = num_filters, kernel_size = kernel_size, strides = strides, padding = padding, data_format = data_format, kernel_regularizer = self.l2_regularizer, name = name)
+        return tf.layers.conv2d(inputs = input_tensor, filters = num_filters, kernel_size = kernel_size, strides = strides, padding = padding, data_format = data_format, name = name)
 
 
     # return convolution2d_transpose layer
     def _get_conv2d_transpose_layer(self, input_tensor, num_filters, kernel_size, strides, padding, data_format, name = 'conv_tr'):
-        return tf.layers.conv2d_transpose(inputs = input_tensor, filters = num_filters, kernel_size = kernel_size, strides = strides, padding = padding, data_format = data_format, kernel_regularizer = self.l2_regularizer, name = name)
+        return tf.layers.conv2d_transpose(inputs = input_tensor, filters = num_filters, kernel_size = kernel_size, strides = strides, padding = padding, data_format = data_format, name = name)
 
 
     # return ELU activation function
